@@ -1,0 +1,41 @@
+{
+  "name": "pm-detect-cli",
+  "version": "0.0.1",
+  "description": "A CLI tool to detect the package manager used in a project",
+  "author": "Jack Westbrook <jack.westbrook@gmail.com>",
+  "bin": "dist/cli.js",
+  "main": "dist/lib.js",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "package-manager",
+    "detect",
+    "cli"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "bugs": "https://github.com/jackw/pm-detect-cli/issues",
+  "repository": "https://github.com/jackw/pm-detect-cli",
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@tsconfig/node20": "^20.1.6",
+    "@tsconfig/recommended": "^1.0.10",
+    "@types/node": "^24.1.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.3.0",
+    "prettier": "3.6.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
+    "vitest": "^3.2.4"
+  }
+}
