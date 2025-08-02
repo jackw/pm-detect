@@ -38,10 +38,6 @@ export function getPackageManagerFromPackageJson(filePath: string): PackageManag
 
     return undefined;
   } catch (e) {
-    if (e instanceof Error) {
-      console.error(e.message);
-    }
-
     return undefined;
   }
 }

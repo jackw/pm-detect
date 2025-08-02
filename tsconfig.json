@@ -14,5 +14,8 @@
     "outDir": "${configDir}/dist"
   },
   "include": ["${configDir}/src/**/*.ts"],
-  "exclude": ["node_modules", "${configDir}/dist"]
+  "exclude": ["node_modules", "${configDir}/dist"],
+  "watchOptions": {
+    "excludeDirectories": ["**/node_modules", "dist"]
+  }
 }
