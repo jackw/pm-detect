@@ -16,7 +16,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "release": "auto shipit"
+    "release": "auto shipit -v"
   },
   "keywords": [
     "package-manager",
