@@ -1,4 +1,7 @@
 # Package Manager Detect
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This package includes a bin which can be used to detect the current node package manager a node project uses and it's associated commands.
 
@@ -94,3 +97,16 @@ This project is based heavily on the following npm packages. Many thanks to thei
 
 - [package-manager-detector](https://www.npmjs.com/package/package-manager-detector)
 - [detect-package-manager](https://www.npmjs.com/package/detect-package-manager)
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
