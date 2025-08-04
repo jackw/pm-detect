@@ -37,7 +37,7 @@ export function getPackageManagerFromPackageJson(filePath: string): PackageManag
     }
 
     return undefined;
-  } catch (e) {
+  } catch {
     return undefined;
   }
 }

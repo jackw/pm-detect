@@ -51,11 +51,12 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci') && github.actor != 'dependabot[bot]'"
     name: Release packages
     permissions:
-      contents: read
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          token: ${{ steps.generate-token.outputs.token }}
           persist-credentials: false
 
       - name: Setup node
@@ -73,6 +74,6 @@ jobs:
 
       - name: Create Release
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-          NODE_AUTH_TOKEN: ${{ fromJSON(steps.get-secrets.outputs.secrets).NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm run release
