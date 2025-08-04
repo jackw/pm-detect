@@ -3,12 +3,14 @@
   "version": "0.0.1",
   "description": "A CLI tool to detect the node package manager used in a project",
   "author": "Jack Westbrook <jack.westbrook@gmail.com>",
-  "bin": "dist/cli.js",
+  "bin": {
+    "pm-detect": "dist/cli.js"
+  },
   "main": "dist/lib.js",
   "scripts": {
     "test": "vitest",
-    "build": "tsc",
-    "dev": "tsc --watch",
+    "build": "tsc -p tsconfig.build.json && chmod +x dist/cli.js",
+    "dev": "tsc -p tsconfig.build.json --watch",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -30,7 +32,10 @@
   },
   "license": "MIT",
   "bugs": "https://github.com/jackw/pm-detect/issues",
-  "repository": "https://github.com/jackw/pm-detect",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackw/pm-detect.git"
+  },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@tsconfig/node20": "^20.1.6",
