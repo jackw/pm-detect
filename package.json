@@ -1,6 +1,6 @@
 {
   "name": "pm-detect",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A CLI tool to detect the node package manager used in a project",
   "author": "Jack Westbrook <jack.westbrook@gmail.com>",
   "bin": {
