@@ -9,6 +9,19 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "none",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "jackw",
+      "name": "Jack Westbrook",
+      "avatar_url": "https://avatars.githubusercontent.com/u/73201?v=4",
+      "profile": "https://www.heywesty.com/",
+      "contributions": [
+        "doc",
+        "infra",
+        "test",
+        "code"
+      ]
+    }
+  ],
   "contributorsPerLine": 7
 }
