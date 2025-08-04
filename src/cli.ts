@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import { detect, getCommands } from './lib';
 import { DetectOptions } from './types';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 interface ParsedArgs {
   workingDir?: string;
@@ -36,7 +38,7 @@ function parseArgs(args: string[]): ParsedArgs {
         break;
       case '--strategies':
         if (i + 1 < args.length) {
-          parsed.strategies = args[i + 1].split(',').map(s => s.trim());
+          parsed.strategies = args[i + 1].split(',').map((s) => s.trim());
           i++; // Skip the next argument since we consumed it
         } else {
           console.error('Error: --strategies requires a comma-separated list');
@@ -70,7 +72,9 @@ function main() {
   }
 
   if (parsedArgs.version) {
-    console.log(require('../package.json').version);
+    const packageJsonPath = join(__dirname, '..', 'package.json');
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+    console.log(packageJson.version);
     process.exit(0);
   }
 
@@ -83,7 +87,7 @@ function main() {
   if (parsedArgs.strategies) {
     // Validate strategies
     const validStrategies = ['packageJson', 'lockFile', 'userAgent'];
-    const invalidStrategies = parsedArgs.strategies.filter(s => !validStrategies.includes(s));
+    const invalidStrategies = parsedArgs.strategies.filter((s) => !validStrategies.includes(s));
 
     if (invalidStrategies.length > 0) {
       console.error(`Error: Invalid strategies: ${invalidStrategies.join(', ')}`);
