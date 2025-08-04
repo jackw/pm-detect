@@ -7,7 +7,7 @@ This package includes a bin which can be used to detect the current node package
 No need to install, can be run via node exec commands such as:
 
 ```
-npx pm-detect-cli
+npx pm-detect
 ```
 
 The above command will log the following JSON blob to stdout (if the project uses NPM):
@@ -34,11 +34,11 @@ The `pm-detect` CLI supports the following options:
 Specifies the working directory to detect the package manager in. If not provided, the current working directory is used.
 
 ```bash
-npx pm-detect-cli --working-dir /path/to/project
+npx pm-detect --working-dir /path/to/project
 ```
 
 > [!NOTE]
-> If no package manager is detected in the working directory the cli will traverse up the directory tree until it finds one. This should prove useful in monorepos where a workspace is the current
+> If no package manager is detected in the working directory the cli will traverse up the directory tree until it finds one. This should prove useful in monorepos where a workspace might be passed as the current working directory.
 
 ### `--strategies <strategies>`
 
@@ -50,10 +50,10 @@ Specifies a comma-separated list of detection strategies to use. Available strat
 
 ```bash
 # Use only package.json detection
-npx pm-detect-cli --strategies packageJson
+npx pm-detect --strategies packageJson
 
 # Use multiple strategies in a specific order
-npx pm-detect-cli --strategies packageJson,lockFile,userAgent
+npx pm-detect --strategies packageJson,lockFile,userAgent
 ```
 
 ### `--help`
@@ -61,7 +61,7 @@ npx pm-detect-cli --strategies packageJson,lockFile,userAgent
 Shows the help message with all available options.
 
 ```bash
-npx pm-detect-cli --help
+npx pm-detect --help
 ```
 
 ### `--version`
@@ -69,21 +69,28 @@ npx pm-detect-cli --help
 Shows the current version of the CLI tool.
 
 ```bash
-npx pm-detect-cli --version
+npx pm-detect --version
 ```
 
 ## Examples
 
 ```bash
 # Basic usage - detects package manager in current directory
-npx pm-detect-cli
+npx pm-detect
 
 # Detect in a specific directory
-npx pm-detect-cli --working-dir /path/to/project
+npx pm-detect --working-dir /path/to/project
 
 # Use only lock file detection strategy
-npx pm-detect-cli --strategies lockFile
+npx pm-detect --strategies lockFile
 
 # Combine options
-npx pm-detect-cli --working-dir /path/to/project --strategies packageJson,lockFile
+npx pm-detect --working-dir /path/to/project --strategies packageJson,lockFile
 ```
+
+## Thanks
+
+This project is based heavily on the following npm packages. Many thanks to their authors.
+
+- [package-manager-detector](https://www.npmjs.com/package/package-manager-detector)
+- [detect-package-manager](https://www.npmjs.com/package/detect-package-manager)

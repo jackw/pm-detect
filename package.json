@@ -29,8 +29,8 @@
     "node": ">=20"
   },
   "license": "MIT",
-  "bugs": "https://github.com/jackw/pm-detect-cli/issues",
-  "repository": "https://github.com/jackw/pm-detect-cli",
+  "bugs": "https://github.com/jackw/pm-detect/issues",
+  "repository": "https://github.com/jackw/pm-detect",
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@tsconfig/node20": "^20.1.6",
