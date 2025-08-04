@@ -10,6 +10,9 @@ export function* lookUp(dir: string = process.cwd()): Generator<string> {
     yield directory;
     directory = path.dirname(directory);
   }
+
+  // Always yield the root directory
+  yield root;
 }
 
 export function getPackageManagerFromUserAgent(): PackageManager | undefined {
@@ -19,7 +22,15 @@ export function getPackageManagerFromUserAgent(): PackageManager | undefined {
     return undefined;
   }
 
-  const [name, versionWithText] = agent.split('/');
+  const parts = agent.split('/');
+  if (parts.length < 2) {
+    return {
+      name: agent as PackageManager['name'],
+      version: undefined,
+    };
+  }
+
+  const [name, versionWithText] = parts;
   const [version] = versionWithText.split(' ');
 
   return {

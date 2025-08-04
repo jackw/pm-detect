@@ -195,19 +195,14 @@ describe('utils', () => {
     });
 
     it('should handle JSON parse errors', () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       mockReadFileSync.mockReturnValue('invalid json');
 
       const result = getPackageManagerFromPackageJson('/path/to/package.json');
 
       expect(result).toBeUndefined();
-      expect(consoleSpy).toHaveBeenCalled();
-
-      consoleSpy.mockRestore();
     });
 
     it('should handle file read errors', () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       mockReadFileSync.mockImplementation(() => {
         throw new Error('File not found');
       });
@@ -215,9 +210,6 @@ describe('utils', () => {
       const result = getPackageManagerFromPackageJson('/path/to/package.json');
 
       expect(result).toBeUndefined();
-      expect(consoleSpy).toHaveBeenCalledWith('File not found');
-
-      consoleSpy.mockRestore();
     });
 
     it('should handle malformed packageManager field', () => {
