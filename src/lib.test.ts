@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import path from 'path';
-import { detect } from './lib';
+import { detect, getCommands } from './lib';
+import { PACKAGE_MANAGER_COMMANDS } from './constants';
 
 describe('lib', () => {
   const originalEnv = process.env;
@@ -101,6 +102,27 @@ describe('lib', () => {
         name: 'npm',
         version: '8.19.2',
       });
+    });
+  });
+
+  describe('getCommands', () => {
+    it('should return the same commands for all package managers', () => {
+      const npmResult = getCommands({ name: 'npm' });
+      expect(Object.keys(npmResult)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.npm));
+
+      const yarnResult = getCommands({ name: 'yarn' });
+      expect(Object.keys(yarnResult)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.npm));
+
+      const yarnBerryResult = getCommands({ name: 'yarnBerry' });
+      expect(Object.keys(yarnBerryResult)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.npm));
+
+      const pnpmResult = getCommands({ name: 'pnpm' });
+      expect(Object.keys(pnpmResult)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.npm));
+    });
+
+    it('returns yarnBerry commands for yarn 2+', () => {
+      const result = getCommands({ name: 'yarn', version: '2.0.0' });
+      expect(Object.keys(result)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.yarnBerry));
     });
   });
 });
