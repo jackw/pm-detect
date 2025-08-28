@@ -8,6 +8,7 @@ export const LOCK_FILE_NAMES = {
 
 const NPM_COMMANDS = {
   name: 'npm',
+  agent: 'npm',
   install: 'npm install',
   'frozen-install': 'npm ci',
   'global-install': 'npm install -g',
@@ -21,6 +22,7 @@ const NPM_COMMANDS = {
 
 const YARN_COMMANDS = {
   name: 'yarn',
+  agent: 'yarn',
   install: 'yarn install',
   'frozen-install': 'yarn install --frozen-lockfile',
   'global-install': 'yarn global add',
@@ -35,6 +37,7 @@ const YARN_COMMANDS = {
 
 const YARN_BERRY_COMMANDS = {
   ...YARN_COMMANDS,
+  agent: 'yarnBerry',
   'frozen-install': 'yarn install --immutable',
   // yarn 2+ has no global install command
   'global-install': 'npm install -g',
@@ -44,6 +47,7 @@ const YARN_BERRY_COMMANDS = {
 
 const PNPM_COMMANDS = {
   name: 'pnpm',
+  agent: 'pnpm',
   install: 'pnpm install',
   'frozen-install': 'pnpm install --frozen-lockfile',
   'global-install': 'pnpm add -g',
