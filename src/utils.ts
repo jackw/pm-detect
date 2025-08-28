@@ -1,6 +1,7 @@
 import path from 'path';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { PackageManager } from './types';
+import { LOCK_FILE_NAMES } from './constants';
 
 export function* lookUp(dir: string = process.cwd()): Generator<string> {
   let directory = path.resolve(dir);
@@ -51,4 +52,17 @@ export function getPackageManagerFromPackageJson(filePath: string): PackageManag
   } catch {
     return undefined;
   }
+}
+
+export function getLockFilePath(directory: string) {
+  for (const d of lookUp(directory)) {
+    for (const lockFile of Object.keys(LOCK_FILE_NAMES)) {
+      const lockFilePath = path.join(d, lockFile);
+      if (existsSync(lockFilePath)) {
+        return path.join(d, lockFile);
+      }
+    }
+  }
+
+  return undefined;
 }

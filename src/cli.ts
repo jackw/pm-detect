@@ -1,8 +1,10 @@
 #!/usr/bin/env node
+import { LOCK_FILE_NAMES } from './constants';
 import { detect, getCommands } from './lib';
 import { DetectOptions } from './types';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import path, { join } from 'path';
+import { getLockFilePath } from './utils';
 
 interface ParsedArgs {
   workingDir?: string;
@@ -80,9 +82,7 @@ function main() {
 
   const options: DetectOptions = {};
 
-  if (parsedArgs.workingDir) {
-    options.cwd = parsedArgs.workingDir;
-  }
+  options.cwd = parsedArgs.workingDir || process.cwd();
 
   if (parsedArgs.strategies) {
     // Validate strategies
@@ -104,8 +104,21 @@ function main() {
     process.exit(1);
   }
 
+  const lockFilePath = getLockFilePath(options.cwd);
+  const fallBackLockFileName =
+    Object.keys(LOCK_FILE_NAMES).find(
+      (key) => LOCK_FILE_NAMES[key as keyof typeof LOCK_FILE_NAMES] === packageManager.name
+    ) ?? Object.keys(LOCK_FILE_NAMES)[0];
+
   const commands = getCommands(packageManager);
-  console.log(JSON.stringify(commands, null, 2));
+
+  const result = {
+    ...packageManager,
+    lockFilePath: lockFilePath || path.join(options.cwd, fallBackLockFileName),
+    ...commands,
+  };
+
+  console.log(JSON.stringify(result, null, 2));
 }
 
 main();
