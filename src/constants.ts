@@ -56,7 +56,7 @@ const PNPM_COMMANDS = {
   update: 'pnpm update',
   run: 'pnpm run',
   exec: 'pnpm dlx',
-  'exec-local': 'pnpm dlx',
+  'exec-local': 'pnpm exec',
 } as const;
 
 export const PACKAGE_MANAGER_COMMANDS = {
