@@ -1,3 +1,15 @@
+# v0.3.1 (Sat Dec 13 2025)
+
+#### 🐛 Bug Fix
+
+- fix: pnpm use exec for local exec command [#11](https://github.com/jackw/pm-detect/pull/11) ([@jackw](https://github.com/jackw))
+
+#### Authors: 1
+
+- Jack Westbrook ([@jackw](https://github.com/jackw))
+
+---
+
 # v0.3.0 (Thu Aug 28 2025)
 
 #### 🚀 Enhancement
