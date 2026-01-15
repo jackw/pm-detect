@@ -2,7 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": ["./tsconfig.json"],
   "compilerOptions": {
-    "declaration": true
+    "declaration": true,
+    "declarationDir": "dist/types"
   },
   "exclude": ["node_modules", "${configDir}/dist", "${configDir}/**/*.test.ts*"]
 }
