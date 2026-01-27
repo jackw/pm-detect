@@ -4,7 +4,6 @@ import { LOCK_FILE_NAMES } from './constants';
 import { existsSync } from 'fs';
 import path from 'path';
 import { PackageManager, DetectOptions } from './types';
-export { getLockFilePath } from './utils';
 
 export function detect(options: DetectOptions = {}): PackageManager | undefined {
   const strategies = options.strategies ?? ['packageJson', 'lockFile', 'userAgent'];
