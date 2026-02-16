@@ -1,3 +1,15 @@
+# v0.4.0 (Mon Feb 16 2026)
+
+#### 🚀 Enhancement
+
+- feat: generate typescript types [#12](https://github.com/jackw/pm-detect/pull/12) ([@jackw](https://github.com/jackw))
+
+#### Authors: 1
+
+- Jack Westbrook ([@jackw](https://github.com/jackw))
+
+---
+
 # v0.3.1 (Sat Dec 13 2025)
 
 #### 🐛 Bug Fix
