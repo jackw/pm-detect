@@ -1,6 +1,8 @@
-export const PACKAGE_MANAGERS = ['npm', 'yarn', 'yarnBerry', 'pnpm'] as const;
+export const PACKAGE_MANAGERS = ['npm', 'yarn', 'yarnBerry', 'pnpm', 'bun'] as const;
 
 export const LOCK_FILE_NAMES = {
+  'bun.lock': 'bun',
+  'bun.lockb': 'bun',
   'package-lock.json': 'npm',
   'yarn.lock': 'yarn',
   'pnpm-lock.yaml': 'pnpm',
@@ -59,9 +61,24 @@ const PNPM_COMMANDS = {
   'exec-local': 'pnpm exec',
 } as const;
 
+const BUN_COMMANDS = {
+  name: 'bun',
+  agent: 'bun',
+  install: 'bun install',
+  'frozen-install': 'bun install --frozen-lockfile',
+  'global-install': 'bun add -g',
+  uninstall: 'bun remove',
+  'global-uninstall': 'bun remove -g',
+  update: 'bun update',
+  run: 'bun run',
+  exec: 'bunx',
+  'exec-local': 'bunx',
+} as const;
+
 export const PACKAGE_MANAGER_COMMANDS = {
   npm: NPM_COMMANDS,
   yarn: YARN_COMMANDS,
   yarnBerry: YARN_BERRY_COMMANDS,
   pnpm: PNPM_COMMANDS,
+  bun: BUN_COMMANDS,
 } as const;

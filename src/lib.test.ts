@@ -42,11 +42,45 @@ describe('lib', () => {
       });
     });
 
+    it('should detect bun from package.json with packageManager field', () => {
+      const result = detect({ cwd: path.resolve('test/fixtures/bun-packagejson-project') });
+
+      expect(result).toEqual({
+        name: 'bun',
+        version: '1.3.11',
+      });
+    });
+
+    it('should prioritize bun packageManager in package.json over conflicting lock files', () => {
+      const result = detect({ cwd: path.resolve('test/fixtures/bun-packagejson-project') });
+
+      expect(result).toEqual({
+        name: 'bun',
+        version: '1.3.11',
+      });
+    });
+
     it('should detect npm from package-lock.json when package.json has no packageManager', () => {
       const result = detect({ cwd: path.resolve('test/fixtures/mixed-project') });
 
       expect(result).toEqual({
         name: 'npm',
+      });
+    });
+
+    it('should detect bun from bun.lock when package.json has no packageManager', () => {
+      const result = detect({ cwd: path.resolve('test/fixtures/bun-project') });
+
+      expect(result).toEqual({
+        name: 'bun',
+      });
+    });
+
+    it('should detect bun from bun.lockb when package.json has no packageManager', () => {
+      const result = detect({ cwd: path.resolve('test/fixtures/bun-lockb-project') });
+
+      expect(result).toEqual({
+        name: 'bun',
       });
     });
 
@@ -118,6 +152,9 @@ describe('lib', () => {
 
       const pnpmResult = getCommands({ name: 'pnpm' });
       expect(Object.keys(pnpmResult)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.npm));
+
+      const bunResult = getCommands({ name: 'bun' });
+      expect(Object.keys(bunResult)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.npm));
     });
 
     it('returns yarnBerry commands for yarn 2+', () => {
