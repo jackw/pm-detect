@@ -27,7 +27,7 @@ The above command will log the following JSON blob to stdout (if the project use
 }
 ```
 
-The structure of the output is always the same regardless of package manager (`NPM`, `yarn`, `PNPM`). It is only the values of the object that change.
+The structure of the output is always the same regardless of package manager (`NPM`, `yarn`, `PNPM`, `bun`). It is only the values of the object that change.
 
 ## Command Line Options
 
@@ -49,7 +49,7 @@ npx pm-detect --working-dir /path/to/project
 Specifies a comma-separated list of detection strategies to use. Available strategies are:
 
 - `packageJson` - Detect from package.json's packageManager field (recommended)
-- `lockFile` - Detect from lock file presence (package-lock.json, yarn.lock, pnpm-lock.yaml)
+- `lockFile` - Detect from lock file presence (bun.lock, bun.lockb, package-lock.json, yarn.lock, pnpm-lock.yaml)
 - `userAgent` - Detect from npm_config_user_agent environment variable
 
 ```bash

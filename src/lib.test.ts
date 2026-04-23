@@ -50,6 +50,22 @@ describe('lib', () => {
       });
     });
 
+    it('should detect bun from bun.lock when package.json has no packageManager', () => {
+      const result = detect({ cwd: path.resolve('test/fixtures/bun-project') });
+
+      expect(result).toEqual({
+        name: 'bun',
+      });
+    });
+
+    it('should detect bun from bun.lockb when package.json has no packageManager', () => {
+      const result = detect({ cwd: path.resolve('test/fixtures/bun-lockb-project') });
+
+      expect(result).toEqual({
+        name: 'bun',
+      });
+    });
+
     it('should traverse up directory tree when no package manager found in current directory', () => {
       // Test from a subdirectory that doesn't have package manager files
       const result = detect({
@@ -118,6 +134,9 @@ describe('lib', () => {
 
       const pnpmResult = getCommands({ name: 'pnpm' });
       expect(Object.keys(pnpmResult)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.npm));
+
+      const bunResult = getCommands({ name: 'bun' });
+      expect(Object.keys(bunResult)).toEqual(Object.keys(PACKAGE_MANAGER_COMMANDS.npm));
     });
 
     it('returns yarnBerry commands for yarn 2+', () => {
