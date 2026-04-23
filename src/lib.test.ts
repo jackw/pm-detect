@@ -42,6 +42,24 @@ describe('lib', () => {
       });
     });
 
+    it('should detect bun from package.json with packageManager field', () => {
+      const result = detect({ cwd: path.resolve('test/fixtures/bun-packagejson-project') });
+
+      expect(result).toEqual({
+        name: 'bun',
+        version: '1.3.11',
+      });
+    });
+
+    it('should prioritize bun packageManager in package.json over conflicting lock files', () => {
+      const result = detect({ cwd: path.resolve('test/fixtures/bun-packagejson-project') });
+
+      expect(result).toEqual({
+        name: 'bun',
+        version: '1.3.11',
+      });
+    });
+
     it('should detect npm from package-lock.json when package.json has no packageManager', () => {
       const result = detect({ cwd: path.resolve('test/fixtures/mixed-project') });
 
