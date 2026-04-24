@@ -1,3 +1,19 @@
+# v0.5.0 (Fri Apr 24 2026)
+
+:tada: This release contains work from a new contributor! :tada:
+
+Thank you, Tom ([@tombrk](https://github.com/tombrk)), for all your work!
+
+#### 🚀 Enhancement
+
+- support bun [#14](https://github.com/jackw/pm-detect/pull/14) ([@tombrk](https://github.com/tombrk))
+
+#### Authors: 1
+
+- Tom ([@tombrk](https://github.com/tombrk))
+
+---
+
 # v0.4.0 (Mon Feb 16 2026)
 
 #### 🚀 Enhancement
