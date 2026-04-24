@@ -1,7 +1,7 @@
 # Package Manager Detect
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This package includes a bin which can be used to detect the current node package manager a node project uses and it's associated commands.
@@ -109,6 +109,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://www.heywesty.com/"><img src="https://avatars.githubusercontent.com/u/73201?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jack Westbrook</b></sub></a><br /><a href="https://github.com/jackw/pm-detect/commits?author=jackw" title="Documentation">📖</a> <a href="#infra-jackw" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/jackw/pm-detect/commits?author=jackw" title="Tests">⚠️</a> <a href="https://github.com/jackw/pm-detect/commits?author=jackw" title="Code">💻</a></td>
+    <td align="center"><a href="https://shorez.de/"><img src="https://avatars.githubusercontent.com/u/26971117?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tom</b></sub></a><br /><a href="https://github.com/jackw/pm-detect/commits?author=tombrk" title="Documentation">📖</a> <a href="https://github.com/jackw/pm-detect/commits?author=tombrk" title="Tests">⚠️</a> <a href="https://github.com/jackw/pm-detect/commits?author=tombrk" title="Code">💻</a></td>
   </tr>
 </table>
 
