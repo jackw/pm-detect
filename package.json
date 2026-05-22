@@ -30,8 +30,10 @@
     "dist"
   ],
   "engines": {
-    "node": ">=24"
+    "node": "24.16.0",
+    "npm": "11.13.0"
   },
+  "packageManager": "npm@11.13.0",
   "license": "MIT",
   "bugs": "https://github.com/jackw/pm-detect/issues",
   "repository": {

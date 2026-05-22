@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` — emits to `dist/` via `tsconfig.build.json` (excludes `*.test.ts`, emits `.d.ts` to `dist/types`) and `chmod +x dist/cli.js`
 - `npm run dev` — `tsc --watch` for the build config
 
-Node ≥ 24 required (matches the version used by `publish.yml` for npm OIDC provenance; CI runs the test suite on Node 24 too).
+Node version is pinned exactly via `.nvmrc` (`24.16.0`) and mirrored in `engines.node` + `engines.npm` + `packageManager` in `package.json`. CI workflows read `.nvmrc` via setup-node's `node-version-file` input — bump in one place to roll the toolchain.
 
 ## Critical constraint: zero runtime dependencies
 
@@ -53,7 +53,7 @@ The detection pipeline lives in three files; understanding how they compose is t
 
 Tests are colocated (`src/*.test.ts`). Fixture projects under `test/fixtures/` represent real on-disk layouts (npm, yarn, pnpm, bun lockfiles; bun.lockb; package.json-only; mixed; nested with a `subdir` for traversal tests; empty). When adding a new detection scenario, add a fixture rather than mocking `fs` — the `lib.test.ts` suite reads the real filesystem on purpose. `utils.test.ts` mocks `fs` for unit-level coverage of the parsers.
 
-Note: the "empty-project" fixture resolves to `npm` because the test walks up and finds *this repo's own* `package-lock.json`. This is expected behavior, not a bug.
+Note: the "empty-project" fixture has no package-manager files. Tests that use it deliberately exercise the directory-walk fallback — `detect()` walks up and finds *this repo's own* `package.json`. Assert on behavior (e.g. `result?.name === 'npm'`), not on the exact version, so the tests don't break when this repo's toolchain pins change.
 
 ## Release flow
 
