@@ -1,4 +1,4 @@
-name: Publish
+name: Stage
 on:
   release:
     types: [published]
@@ -7,9 +7,9 @@ permissions:
   contents: read
 
 jobs:
-  publish:
+  stage:
     runs-on: ubuntu-latest
-    name: Publish to npm
+    name: Stage release to npm
     permissions:
       contents: read
       id-token: write
@@ -32,7 +32,7 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish to npm
+      - name: Stage release to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --provenance --access public
+        run: npm stage publish --provenance --access public

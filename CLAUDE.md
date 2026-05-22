@@ -57,14 +57,17 @@ Note: the "empty-project" fixture has no package-manager files. Tests that use i
 
 ## Release flow
 
-Releases use [`release-please`](https://github.com/googleapis/release-please) in manifest mode, driven by [Conventional Commits](https://www.conventionalcommits.org/). Two workflows, no direct writes to `main`:
+Releases use [`release-please`](https://github.com/googleapis/release-please) in manifest mode, driven by [Conventional Commits](https://www.conventionalcommits.org/). Two workflows plus a manual approve step, no direct writes to `main` and no CI-driven publish to npm:
 
-1. `.github/workflows/release.yml` — on push to `main`, runs `release-please-action` which opens or updates a single **Release PR** containing the version bump + regenerated `CHANGELOG.md` entry. CI (`ci.yml`) runs on that PR. Merging it (a human action) is the publish gate.
-2. `.github/workflows/publish.yml` — fires on the GitHub Release `published` event that release-please creates when the Release PR is merged. Runs `npm publish --provenance --access public` on Node 24 with OIDC.
+1. `.github/workflows/release.yml` — on push to `main`, runs `release-please-action` which opens or updates a single **Release PR** containing the version bump + regenerated `CHANGELOG.md` entry. CI (`ci.yml`) runs on that PR. Merging it (a human action) is the release gate.
+2. `.github/workflows/stage.yml` — fires on the GitHub Release `published` event that release-please creates when the Release PR is merged. Runs [`npm stage publish --provenance --access public`](https://docs.npmjs.com/cli/v11/commands/npm-stage) on Node 24 with OIDC, depositing the tarball in npm's staging area without making it public.
+3. **Manual promote** — a maintainer runs `npm stage list` to find the staged version, then `npm stage approve <stage-id>` locally with 2FA to promote it to the public registry (`npm stage reject <stage-id>` to discard).
 
-Version state lives in `.release-please-manifest.json` (currently `0.5.0`). `release-please-config.json` configures `bump-minor-pre-major: true` so pre-1.0 `feat:` commits bump minor, not major. The two-workflow split keeps `setup-node` out of the same workflow as `release-please-action`, which is what kept zizmor from flagging the publish path as a cache-poisoning vector.
+Version state lives in `.release-please-manifest.json` (currently `0.5.0`). `release-please-config.json` configures `bump-minor-pre-major: true` so pre-1.0 `feat:` commits bump minor, not major. The two-workflow split keeps `setup-node` out of the same workflow as `release-please-action`, which is what kept zizmor from flagging the staging path as a cache-poisoning vector.
 
-A `GH_TOKEN` PAT secret is required so that the Release PR opened by release-please triggers `ci.yml` and `zizmor.yml` (default `GITHUB_TOKEN` does not). `NPM_TOKEN` is the publish credential, paired with OIDC provenance.
+The stage + approve gate is the supply-chain analogue of the release-please PR gate: CI cannot put a tarball on the public registry without a human present with 2FA, so a compromised CI runner cannot ship a malicious version unilaterally.
+
+A `GH_TOKEN` PAT secret is required so that the Release PR opened by release-please triggers `ci.yml` and `zizmor.yml` (default `GITHUB_TOKEN` does not). `NPM_TOKEN` is the staging credential, paired with OIDC provenance.
 
 ### Workflow-hardening pre-flight
 
