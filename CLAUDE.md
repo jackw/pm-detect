@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` — emits to `dist/` via `tsconfig.build.json` (excludes `*.test.ts`, emits `.d.ts` to `dist/types`) and `chmod +x dist/cli.js`
 - `npm run dev` — `tsc --watch` for the build config
 
-Node version is pinned exactly via `.nvmrc` (`24.16.0`) and mirrored in `engines.node` + `engines.npm` + `packageManager` in `package.json`. CI workflows read `.nvmrc` via setup-node's `node-version-file` input — bump in one place to roll the toolchain.
+Node toolchain is pinned exactly for contributors and CI via `.nvmrc` (`24.16.0`) and `packageManager` (`npm@11.13.0`) in `package.json`. CI workflows read `.nvmrc` via setup-node's `node-version-file` input — bump in one place to roll the toolchain. `engines.node` is a minimum range (`>=22`), not an exact pin: it's the *consumer-facing* compatibility floor, set to the lowest Node version that supports the compile target (`es2024` via `@tsconfig/node24`). Exact-pinning `engines` would emit EBADENGINE warnings (and hard-fail consumers with `engine-strict=true`) on every Node patch release.
 
 ## Critical constraint: zero runtime dependencies
 
