@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run build` — emits to `dist/` via `tsconfig.build.json` (excludes `*.test.ts`, emits `.d.ts` to `dist/types`) and `chmod +x dist/cli.js`
 - `npm run dev` — `tsc --watch` for the build config
 
-Node ≥ 20 required. CI tests on Node 20; the publish workflow runs on Node 24 (needed for npm OIDC provenance).
+Node ≥ 24 required (matches the version used by `publish.yml` for npm OIDC provenance; CI runs the test suite on Node 24 too).
 
 ## Critical constraint: zero runtime dependencies
 
