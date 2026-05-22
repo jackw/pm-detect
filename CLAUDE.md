@@ -16,9 +16,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run format` / `npm run format:check` — Prettier
 - `npm run build` — emits to `dist/` via `tsconfig.build.json` (excludes `*.test.ts`, emits `.d.ts` to `dist/types`) and `chmod +x dist/cli.js`
 - `npm run dev` — `tsc --watch` for the build config
-- `npm run release` — `auto shipit` (release tooling, normally only run in CI)
 
-Node ≥ 20 required. CI matrix tests on Node 20; release publishes on Node 24 (needed for npm OIDC provenance).
+Node ≥ 20 required. CI tests on Node 20; the publish workflow runs on Node 24 (needed for npm OIDC provenance).
 
 ## Critical constraint: zero runtime dependencies
 
@@ -58,7 +57,27 @@ Note: the "empty-project" fixture resolves to `npm` because the test walks up an
 
 ## Release flow
 
-Releases use [`auto`](https://intuit.github.io/auto/) (config inline in `package.json` under `auto`). `onlyPublishWithReleaseLabel: true` means a PR must carry a release label (e.g. `minor`, `patch`) for `auto shipit` to publish. The `released` plugin comments on shipped PRs; `all-contributors` updates the contributors list on merge. Publishing uses npm provenance (OIDC) — that's why the release job runs on Node 24.
+Releases use [`release-please`](https://github.com/googleapis/release-please) in manifest mode, driven by [Conventional Commits](https://www.conventionalcommits.org/). Two workflows, no direct writes to `main`:
+
+1. `.github/workflows/release.yml` — on push to `main`, runs `release-please-action` which opens or updates a single **Release PR** containing the version bump + regenerated `CHANGELOG.md` entry. CI (`ci.yml`) runs on that PR. Merging it (a human action) is the publish gate.
+2. `.github/workflows/publish.yml` — fires on the GitHub Release `published` event that release-please creates when the Release PR is merged. Runs `npm publish --provenance --access public` on Node 24 with OIDC.
+
+Version state lives in `.release-please-manifest.json` (currently `0.5.0`). `release-please-config.json` configures `bump-minor-pre-major: true` so pre-1.0 `feat:` commits bump minor, not major. The two-workflow split keeps `setup-node` out of the same workflow as `release-please-action`, which is what kept zizmor from flagging the publish path as a cache-poisoning vector.
+
+A `GH_TOKEN` PAT secret is required so that the Release PR opened by release-please triggers `ci.yml` and `zizmor.yml` (default `GITHUB_TOKEN` does not). `NPM_TOKEN` is the publish credential, paired with OIDC provenance.
+
+### Workflow-hardening pre-flight
+
+Any change under `.github/workflows/` must, before commit, pass both:
+
+- `pinact run --check` — every `uses:` ref pinned to a commit SHA (`# vX.Y.Z` comment trailing the SHA).
+- `zizmor .github/workflows/` — no findings at the default `regular` persona.
+
+`.github/workflows/zizmor.yml` enforces the same check in CI on every push and PR. Add the `zizmor` status check to branch protection on `main` to make it a required gate.
+
+### Accepted feature loss vs `auto`
+
+The previous `auto`-based flow had an `all-contributors` plugin that updated `.all-contributorsrc` and the README contributors table during releases. release-please has no equivalent; both files remain in the repo as manual artifacts. Future contributor updates are either hand-edits or done via the `@all-contributors` GitHub bot (PR-comment driven, no CI write access).
 
 ## Conventions
 
