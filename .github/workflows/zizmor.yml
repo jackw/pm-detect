@@ -1,0 +1,29 @@
+name: Zizmor
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    name: Audit workflows
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - name: Install zizmor
+        run: pipx install zizmor==1.22.0
+
+      - name: Run zizmor
+        run: zizmor --persona=regular .github/workflows/
