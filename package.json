@@ -16,8 +16,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit",
-    "release": "auto shipit -v"
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "package-manager",
@@ -33,6 +32,7 @@
   "engines": {
     "node": ">=20"
   },
+  "packageManager": "npm@11.13.0",
   "license": "MIT",
   "bugs": "https://github.com/jackw/pm-detect/issues",
   "repository": {
@@ -40,36 +40,16 @@
     "url": "git+https://github.com/jackw/pm-detect.git"
   },
   "devDependencies": {
-    "@auto-it/all-contributors": "^11.3.0",
-    "@auto-it/first-time-contributor": "^11.3.0",
-    "@auto-it/omit-commits": "^11.3.0",
-    "@auto-it/released": "^11.3.0",
     "@eslint/js": "^9.32.0",
-    "@tsconfig/node20": "^20.1.6",
+    "@tsconfig/node24": "^24.0.4",
     "@tsconfig/recommended": "^1.0.10",
     "@types/node": "^24.1.0",
-    "auto": "^11.3.0",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.3.0",
     "prettier": "3.6.2",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.38.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.4",
     "vitest": "^3.2.4"
-  },
-  "auto": {
-    "plugins": [
-      "npm",
-      "all-contributors",
-      "first-time-contributor",
-      [
-        "omit-commits",
-        {
-          "labels": "skip-release"
-        }
-      ],
-      "released"
-    ],
-    "onlyPublishWithReleaseLabel": true
   }
 }

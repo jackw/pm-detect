@@ -96,14 +96,11 @@ describe('lib', () => {
       });
     });
 
-    it('should return undefined when no package manager is found', () => {
-      // This test should actually expect to find the root package-lock.json
-      // since the function traverses up the directory tree
+    it('walks up the directory tree and detects from the repo root package.json', () => {
       const result = detect({ cwd: path.resolve('test/fixtures/empty-project') });
 
-      expect(result).toEqual({
-        name: 'npm',
-      });
+      expect(result?.name).toBe('npm');
+      expect(result?.version).toBeTruthy();
     });
 
     it('should handle custom working directory', () => {
@@ -115,16 +112,12 @@ describe('lib', () => {
       });
     });
 
-    it('should detect from user agent when no files are found', () => {
-      // Mock user agent when no files are found
-      process.env.npm_config_user_agent = 'npm/8.19.2 node/v18.17.0 darwin x64';
+    it('prefers files found while walking up over the user agent fallback', () => {
+      process.env.npm_config_user_agent = 'yarn/1.22.19 npm/? node/v18.17.0 darwin x64';
 
-      // Since there's a package-lock.json in the root, it will find that instead of user agent
       const result = detect({ cwd: path.resolve('test/fixtures/empty-project') });
 
-      expect(result).toEqual({
-        name: 'npm',
-      });
+      expect(result?.name).toBe('npm');
     });
 
     it('should prioritize package.json over lock files', () => {
