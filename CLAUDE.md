@@ -63,7 +63,13 @@ Releases use [`release-please`](https://github.com/googleapis/release-please) in
 2. `.github/workflows/stage.yml` — fires on the GitHub Release `published` event that release-please creates when the Release PR is merged. Runs [`npm stage publish --provenance --access public`](https://docs.npmjs.com/cli/v11/commands/npm-stage) on Node 24 with OIDC, depositing the tarball in npm's staging area without making it public.
 3. **Manual promote** — a maintainer runs `npm stage list` to find the staged version, then `npm stage approve <stage-id>` locally with 2FA to promote it to the public registry (`npm stage reject <stage-id>` to discard).
 
-Version state lives in `.release-please-manifest.json` (currently `0.5.0`). `release-please-config.json` configures `bump-minor-pre-major: true` so pre-1.0 `feat:` commits bump minor, not major. The two-workflow split keeps `setup-node` out of the same workflow as `release-please-action`, which is what kept zizmor from flagging the staging path as a cache-poisoning vector.
+Version state lives in `.release-please-manifest.json` (currently `0.5.0`). `release-please-config.json` configures:
+
+- `bump-minor-pre-major: true` — breaking changes (`feat!:`, `BREAKING CHANGE:`) bump minor instead of major while pre-1.0, so a single breaking change doesn't accidentally promote the project to 1.0.0.
+- `bump-patch-for-minor-pre-major: false` — `feat:` commits still bump minor pre-1.0 (the default). Flip to `true` if you want patch-only bumps until you explicitly cut 1.0.0.
+- `include-component-in-tag: false` — release-please looks for `v<version>` tags (matching the existing `v0.5.0` tag from the old `auto` flow) instead of the manifest-mode default `<component>-v<version>`.
+
+The two-workflow split keeps `setup-node` out of the same workflow as `release-please-action`, which is what kept zizmor from flagging the staging path as a cache-poisoning vector.
 
 The stage + approve gate is the supply-chain analogue of the release-please PR gate: CI cannot put a tarball on the public registry without a human present with 2FA, so a compromised CI runner cannot ship a malicious version unilaterally.
 
@@ -76,7 +82,21 @@ Any change under `.github/workflows/` must, before commit, pass both:
 - `pinact run --check` — every `uses:` ref pinned to a commit SHA (`# vX.Y.Z` comment trailing the SHA).
 - `zizmor .github/workflows/` — no findings at the default `regular` persona.
 
-`.github/workflows/zizmor.yml` enforces the same check in CI on every push and PR. Add the `zizmor` status check to branch protection on `main` to make it a required gate.
+`.github/workflows/zizmor.yml` enforces the same check in CI on every push and PR.
+
+### Branch protection on `main`
+
+The release-please security model (no direct writes to `main`, human-in-the-loop on Release PR and `npm stage approve`) depends on these branch protection rules being applied in the GitHub UI (Settings → Branches → rule for `main`):
+
+- Disallow direct pushes — all changes go through PRs. No force-pushes, no admin bypass.
+- Require at least one approving review.
+- Required status checks (must be green to merge):
+  - `Node CI` (typecheck + lint + test + build)
+  - `Zizmor` (workflow static analysis)
+  - `Validate PR title` (Conventional Commit format on the PR title — squash-merge uses the title as the commit message on `main`)
+- Require linear history (no merge commits) — keeps the `main` log parseable by release-please.
+- Require conversation resolution before merging.
+- Allow only squash merges; disable merge commits and rebase merges. With squash merges, the PR title becomes the commit message on `main`, which is exactly what `Validate PR title` is gating.
 
 ### Accepted feature loss vs `auto`
 
