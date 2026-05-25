@@ -37,7 +37,7 @@ The detection pipeline lives in three files; understanding how they compose is t
 
 **Order matters.** Strategies short-circuit on first hit per directory, but the outer directory loop also short-circuits — meaning a deeper `package.json` with no `packageManager` field will *not* fall through to a lockfile in a parent directory unless `lockFile` runs in the same iteration. Both loops are intentional and tested (see "traverse up directory tree" and "prioritize package.json" cases in `src/lib.test.ts`).
 
-`userAgent` as a fallback is also applied *after* the directory walk completes, in case nothing was found in any directory. This is separate from including `userAgent` in the strategy list.
+`userAgent` as a fallback is also applied *after* the directory walk completes, in case nothing was found in any directory. The post-walk fallback runs only when `'userAgent'` is in the strategies list (the default). Callers that pass an explicit list excluding it get no fallback — `detect()` returns `undefined` instead.
 
 ### Commands resolution
 
