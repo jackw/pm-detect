@@ -294,10 +294,9 @@ describe('utils', () => {
     });
 
     it('returns the first matching release when multiple exist', () => {
-      mockReaddirSync.mockReturnValue([
-        'yarn-3.6.4.cjs',
-        'yarn-4.0.2.cjs',
-      ] as unknown as ReturnType<typeof readdirSync>);
+      mockReaddirSync.mockReturnValue(['yarn-3.6.4.cjs', 'yarn-4.0.2.cjs'] as unknown as ReturnType<
+        typeof readdirSync
+      >);
 
       expect(getYarnBerryVersion('/repo')).toBe('3.6.4');
     });
@@ -375,9 +374,7 @@ describe('utils', () => {
     });
 
     it('prefers pnpm over npm when both markers exist (specificity)', () => {
-      mockExistsSync.mockImplementation(
-        markersExist('node_modules/.modules.yaml', 'node_modules/.package-lock.json')
-      );
+      mockExistsSync.mockImplementation(markersExist('node_modules/.modules.yaml', 'node_modules/.package-lock.json'));
       mockReadFileSync.mockReturnValue('packageManager: pnpm@8.6.0\n');
 
       expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'pnpm', version: '8.6.0' });
