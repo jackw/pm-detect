@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import path from 'path';
-import { readFileSync, readdirSync } from 'fs';
+import { existsSync, readFileSync, readdirSync } from 'fs';
 import {
   lookUp,
   getPackageManagerFromUserAgent,
   getPackageManagerFromPackageJson,
+  getPackageManagerFromInstallState,
   getYarnBerryVersion,
   parsePnpmVersionFromModulesYaml,
 } from './utils';
@@ -299,6 +300,93 @@ describe('utils', () => {
       ] as unknown as ReturnType<typeof readdirSync>);
 
       expect(getYarnBerryVersion('/repo')).toBe('3.6.4');
+    });
+  });
+
+  describe('getPackageManagerFromInstallState', () => {
+    const mockExistsSync = vi.mocked(existsSync);
+    const mockReadFileSync = vi.mocked(readFileSync);
+    const mockReaddirSync = vi.mocked(readdirSync);
+
+    function markersExist(...suffixes: string[]) {
+      return (p: unknown) => suffixes.some((s) => String(p).endsWith(s));
+    }
+
+    beforeEach(() => {
+      mockExistsSync.mockReturnValue(false);
+    });
+
+    it('detects pnpm with version from .modules.yaml', () => {
+      mockExistsSync.mockImplementation(markersExist('node_modules/.modules.yaml'));
+      mockReadFileSync.mockReturnValue('packageManager: pnpm@8.6.0\n');
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'pnpm', version: '8.6.0' });
+    });
+
+    it('detects pnpm without version when packageManager field is absent', () => {
+      mockExistsSync.mockImplementation(markersExist('node_modules/.modules.yaml'));
+      mockReadFileSync.mockReturnValue('layoutVersion: 5\n');
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'pnpm' });
+    });
+
+    it('detects pnpm even when .modules.yaml read throws', () => {
+      mockExistsSync.mockImplementation(markersExist('node_modules/.modules.yaml'));
+      mockReadFileSync.mockImplementation(() => {
+        throw new Error('EACCES');
+      });
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'pnpm' });
+    });
+
+    it('detects yarnBerry via .yarn-state.yml with version from .yarn/releases', () => {
+      mockExistsSync.mockImplementation(markersExist('node_modules/.yarn-state.yml'));
+      mockReaddirSync.mockReturnValue(['yarn-4.0.2.cjs'] as unknown as ReturnType<typeof readdirSync>);
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'yarnBerry', version: '4.0.2' });
+    });
+
+    it('detects yarnBerry via .pnp.cjs at the directory root', () => {
+      mockExistsSync.mockImplementation(markersExist('/.pnp.cjs'));
+      mockReaddirSync.mockReturnValue(['yarn-3.6.4.cjs'] as unknown as ReturnType<typeof readdirSync>);
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'yarnBerry', version: '3.6.4' });
+    });
+
+    it('returns yarnBerry without version when .yarn/releases is missing', () => {
+      mockExistsSync.mockImplementation(markersExist('/.pnp.cjs'));
+      mockReaddirSync.mockImplementation(() => {
+        throw new Error('ENOENT');
+      });
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'yarnBerry' });
+    });
+
+    it('detects yarn classic from .yarn-integrity', () => {
+      mockExistsSync.mockImplementation(markersExist('node_modules/.yarn-integrity'));
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'yarn' });
+    });
+
+    it('detects npm from .package-lock.json', () => {
+      mockExistsSync.mockImplementation(markersExist('node_modules/.package-lock.json'));
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'npm' });
+    });
+
+    it('prefers pnpm over npm when both markers exist (specificity)', () => {
+      mockExistsSync.mockImplementation(
+        markersExist('node_modules/.modules.yaml', 'node_modules/.package-lock.json')
+      );
+      mockReadFileSync.mockReturnValue('packageManager: pnpm@8.6.0\n');
+
+      expect(getPackageManagerFromInstallState('/repo')).toEqual({ name: 'pnpm', version: '8.6.0' });
+    });
+
+    it('returns undefined when no markers exist', () => {
+      mockExistsSync.mockReturnValue(false);
+
+      expect(getPackageManagerFromInstallState('/repo')).toBeUndefined();
     });
   });
 });

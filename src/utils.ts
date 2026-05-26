@@ -62,6 +62,40 @@ export function parsePnpmVersionFromModulesYaml(contents: string): string | unde
   return match[1];
 }
 
+export function getPackageManagerFromInstallState(directory: string): PackageManager | undefined {
+  const nodeModules = path.join(directory, 'node_modules');
+
+  if (existsSync(path.join(nodeModules, '.modules.yaml'))) {
+    let version: string | undefined;
+    try {
+      version = parsePnpmVersionFromModulesYaml(readFileSync(path.join(nodeModules, '.modules.yaml'), 'utf-8'));
+    } catch {
+      // file unreadable; presence alone is enough to identify pnpm
+    }
+    return version ? { name: 'pnpm', version } : { name: 'pnpm' };
+  }
+
+  if (existsSync(path.join(nodeModules, '.yarn-state.yml'))) {
+    const version = getYarnBerryVersion(directory);
+    return version ? { name: 'yarnBerry', version } : { name: 'yarnBerry' };
+  }
+
+  if (existsSync(path.join(directory, '.pnp.cjs'))) {
+    const version = getYarnBerryVersion(directory);
+    return version ? { name: 'yarnBerry', version } : { name: 'yarnBerry' };
+  }
+
+  if (existsSync(path.join(nodeModules, '.yarn-integrity'))) {
+    return { name: 'yarn' };
+  }
+
+  if (existsSync(path.join(nodeModules, '.package-lock.json'))) {
+    return { name: 'npm' };
+  }
+
+  return undefined;
+}
+
 export function getYarnBerryVersion(directory: string): string | undefined {
   let entries: string[];
   try {
