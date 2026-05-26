@@ -154,6 +154,54 @@ describe('lib', () => {
         rmSync(tmp, { recursive: true });
       }
     });
+
+    describe('installState strategy', () => {
+      it('detects pnpm with version from node_modules/.modules.yaml', () => {
+        const result = detect({
+          cwd: path.resolve('test/fixtures/pnpm-installed-project'),
+          strategies: ['installState'],
+        });
+
+        expect(result).toEqual({ name: 'pnpm', version: '8.6.0' });
+      });
+
+      it('detects npm from node_modules/.package-lock.json', () => {
+        const result = detect({
+          cwd: path.resolve('test/fixtures/npm-installed-project'),
+          strategies: ['installState'],
+        });
+
+        expect(result).toEqual({ name: 'npm' });
+      });
+
+      it('detects yarn classic from node_modules/.yarn-integrity', () => {
+        const result = detect({
+          cwd: path.resolve('test/fixtures/yarn-classic-installed-project'),
+          strategies: ['installState'],
+        });
+
+        expect(result).toEqual({ name: 'yarn' });
+      });
+
+      it('detects yarnBerry from .pnp.cjs and reads version from .yarn/releases', () => {
+        const result = detect({
+          cwd: path.resolve('test/fixtures/yarn-berry-pnp-project'),
+          strategies: ['installState'],
+        });
+
+        expect(result).toEqual({ name: 'yarnBerry', version: '4.0.2' });
+      });
+
+      it('returns undefined when only a package.json is present', () => {
+        const tmp = mkdtempSync(path.join(tmpdir(), 'pm-detect-'));
+        try {
+          const result = detect({ cwd: tmp, strategies: ['installState'] });
+          expect(result).toBeUndefined();
+        } finally {
+          rmSync(tmp, { recursive: true });
+        }
+      });
+    });
   });
 
   describe('getCommands', () => {

@@ -1,5 +1,10 @@
 import { PACKAGE_MANAGER_COMMANDS } from './constants';
-import { getPackageManagerFromPackageJson, getPackageManagerFromUserAgent, lookUp } from './utils';
+import {
+  getPackageManagerFromInstallState,
+  getPackageManagerFromPackageJson,
+  getPackageManagerFromUserAgent,
+  lookUp,
+} from './utils';
 import { LOCK_FILE_NAMES } from './constants';
 import { existsSync } from 'fs';
 import path from 'path';
@@ -31,6 +36,14 @@ export function detect(options: DetectOptions = {}): PackageManager | undefined 
                 name,
               };
             }
+          }
+          break;
+        }
+
+        case 'installState': {
+          const result = getPackageManagerFromInstallState(directory);
+          if (result) {
+            return result;
           }
           break;
         }
