@@ -38,13 +38,14 @@ export function detect(options: DetectOptions = {}): PackageManager | undefined 
     }
   }
 
-  // Fallback to user agent if no package manager found in files
-  const userAgentResult = getPackageManagerFromUserAgent();
-  if (userAgentResult) {
-    return {
-      name: userAgentResult.name as PackageManager['name'],
-      version: userAgentResult.version,
-    };
+  if (strategies.includes('userAgent')) {
+    const userAgentResult = getPackageManagerFromUserAgent();
+    if (userAgentResult) {
+      return {
+        name: userAgentResult.name as PackageManager['name'],
+        version: userAgentResult.version,
+      };
+    }
   }
 
   return undefined;

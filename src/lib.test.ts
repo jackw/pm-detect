@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { mkdtempSync, rmSync } from 'fs';
+import { tmpdir } from 'os';
 import path from 'path';
 import { detect, getCommands } from './lib';
 import { PACKAGE_MANAGER_COMMANDS } from './constants';
@@ -129,6 +131,28 @@ describe('lib', () => {
         name: 'npm',
         version: '8.19.2',
       });
+    });
+
+    it('uses userAgent strategy exclusively when other strategies are excluded', () => {
+      process.env.npm_config_user_agent = 'yarn/1.22.19 npm/? node/v18.17.0 darwin x64';
+
+      const result = detect({
+        cwd: path.resolve('test/fixtures/npm-project'),
+        strategies: ['userAgent'],
+      });
+
+      expect(result).toEqual({ name: 'yarn', version: '1.22.19' });
+    });
+
+    it('does not fall back to userAgent when strategies excludes it', () => {
+      process.env.npm_config_user_agent = 'yarn/1.22.19 npm/? node/v18.17.0 darwin x64';
+      const tmp = mkdtempSync(path.join(tmpdir(), 'pm-detect-'));
+      try {
+        const result = detect({ cwd: tmp, strategies: ['packageJson', 'lockFile'] });
+        expect(result).toBeUndefined();
+      } finally {
+        rmSync(tmp, { recursive: true });
+      }
     });
   });
 
