@@ -1,4 +1,13 @@
-# v0.5.0 (Fri Apr 24 2026)
+# Changelog
+
+## [0.5.1](https://github.com/jackw/pm-detect/compare/v0.5.0...v0.5.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* gate userAgent fallback on strategies arg ([#18](https://github.com/jackw/pm-detect/issues/18)) ([2ce69fc](https://github.com/jackw/pm-detect/commit/2ce69fc3b1ee58161bc83aaa1785ca4d0f1b8af2))
+
+## v0.5.0 (Fri Apr 24 2026)
 
 :tada: This release contains work from a new contributor! :tada:
 
@@ -14,7 +23,7 @@ Thank you, Tom ([@tombrk](https://github.com/tombrk)), for all your work!
 
 ---
 
-# v0.4.0 (Mon Feb 16 2026)
+## v0.4.0 (Mon Feb 16 2026)
 
 #### 🚀 Enhancement
 
@@ -26,7 +35,7 @@ Thank you, Tom ([@tombrk](https://github.com/tombrk)), for all your work!
 
 ---
 
-# v0.3.1 (Sat Dec 13 2025)
+## v0.3.1 (Sat Dec 13 2025)
 
 #### 🐛 Bug Fix
 
@@ -38,7 +47,7 @@ Thank you, Tom ([@tombrk](https://github.com/tombrk)), for all your work!
 
 ---
 
-# v0.3.0 (Thu Aug 28 2025)
+## v0.3.0 (Thu Aug 28 2025)
 
 #### 🚀 Enhancement
 
@@ -50,7 +59,7 @@ Thank you, Tom ([@tombrk](https://github.com/tombrk)), for all your work!
 
 ---
 
-# v0.2.0 (Tue Aug 05 2025)
+## v0.2.0 (Tue Aug 05 2025)
 
 #### 🚀 Enhancement
 
@@ -62,7 +71,7 @@ Thank you, Tom ([@tombrk](https://github.com/tombrk)), for all your work!
 
 ---
 
-# v0.1.1 (Mon Aug 04 2025)
+## v0.1.1 (Mon Aug 04 2025)
 
 #### 🐛 Bug Fix
 
