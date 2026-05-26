@@ -86,7 +86,7 @@ function main() {
 
   if (parsedArgs.strategies) {
     // Validate strategies
-    const validStrategies = ['packageJson', 'lockFile', 'userAgent'];
+    const validStrategies = ['packageJson', 'installState', 'lockFile', 'userAgent'];
     const invalidStrategies = parsedArgs.strategies.filter((s) => !validStrategies.includes(s));
 
     if (invalidStrategies.length > 0) {
