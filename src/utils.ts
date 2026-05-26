@@ -54,6 +54,14 @@ export function getPackageManagerFromPackageJson(filePath: string): PackageManag
   }
 }
 
+export function parsePnpmVersionFromModulesYaml(contents: string): string | undefined {
+  const match = /^packageManager:\s*pnpm@(\S+?)\s*$/m.exec(contents);
+  if (!match) {
+    return undefined;
+  }
+  return match[1];
+}
+
 export function getLockFilePath(directory: string) {
   for (const d of lookUp(directory)) {
     for (const lockFile of Object.keys(LOCK_FILE_NAMES)) {

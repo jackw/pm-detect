@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import path from 'path';
 import { readFileSync } from 'fs';
-import { lookUp, getPackageManagerFromUserAgent, getPackageManagerFromPackageJson } from './utils';
+import {
+  lookUp,
+  getPackageManagerFromUserAgent,
+  getPackageManagerFromPackageJson,
+  parsePnpmVersionFromModulesYaml,
+} from './utils';
 
 // Mock fs module
 vi.mock('fs', () => ({
@@ -226,6 +231,32 @@ describe('utils', () => {
         name: 'invalid-format',
         version: undefined,
       });
+    });
+  });
+
+  describe('parsePnpmVersionFromModulesYaml', () => {
+    it('extracts the version from a packageManager: pnpm@X.Y.Z line', () => {
+      const yaml = ['layoutVersion: 5', 'packageManager: pnpm@8.6.0', 'storeDir: /tmp/store'].join('\n');
+
+      expect(parsePnpmVersionFromModulesYaml(yaml)).toBe('8.6.0');
+    });
+
+    it('returns undefined when the packageManager field is missing', () => {
+      const yaml = ['layoutVersion: 5', 'storeDir: /tmp/store'].join('\n');
+
+      expect(parsePnpmVersionFromModulesYaml(yaml)).toBeUndefined();
+    });
+
+    it('tolerates trailing whitespace on the line', () => {
+      const yaml = 'packageManager: pnpm@9.1.2   \nstoreDir: /tmp/store';
+
+      expect(parsePnpmVersionFromModulesYaml(yaml)).toBe('9.1.2');
+    });
+
+    it('does not match non-pnpm managers', () => {
+      const yaml = 'packageManager: npm@10.0.0';
+
+      expect(parsePnpmVersionFromModulesYaml(yaml)).toBeUndefined();
     });
   });
 });
