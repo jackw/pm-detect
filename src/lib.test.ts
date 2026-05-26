@@ -201,6 +201,21 @@ describe('lib', () => {
           rmSync(tmp, { recursive: true });
         }
       });
+
+      it('default order prefers installState over a conflicting lockfile', () => {
+        const result = detect({ cwd: path.resolve('test/fixtures/install-state-vs-lockfile-conflict') });
+
+        expect(result).toEqual({ name: 'pnpm', version: '8.6.0' });
+      });
+
+      it('respects caller-supplied order when lockFile precedes installState', () => {
+        const result = detect({
+          cwd: path.resolve('test/fixtures/install-state-vs-lockfile-conflict'),
+          strategies: ['lockFile', 'installState'],
+        });
+
+        expect(result).toEqual({ name: 'npm' });
+      });
     });
   });
 
