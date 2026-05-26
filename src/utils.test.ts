@@ -1,16 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import path from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import {
   lookUp,
   getPackageManagerFromUserAgent,
   getPackageManagerFromPackageJson,
+  getYarnBerryVersion,
   parsePnpmVersionFromModulesYaml,
 } from './utils';
 
 // Mock fs module
 vi.mock('fs', () => ({
+  existsSync: vi.fn(),
   readFileSync: vi.fn(),
+  readdirSync: vi.fn(),
 }));
 
 describe('utils', () => {
@@ -257,6 +260,45 @@ describe('utils', () => {
       const yaml = 'packageManager: npm@10.0.0';
 
       expect(parsePnpmVersionFromModulesYaml(yaml)).toBeUndefined();
+    });
+  });
+
+  describe('getYarnBerryVersion', () => {
+    const mockReaddirSync = vi.mocked(readdirSync);
+
+    it('returns the semver from a yarn-X.Y.Z.cjs release file', () => {
+      mockReaddirSync.mockReturnValue(['yarn-4.0.2.cjs'] as unknown as ReturnType<typeof readdirSync>);
+
+      expect(getYarnBerryVersion('/repo')).toBe('4.0.2');
+    });
+
+    it('handles prerelease tags in the version', () => {
+      mockReaddirSync.mockReturnValue(['yarn-4.1.0-rc.1.cjs'] as unknown as ReturnType<typeof readdirSync>);
+
+      expect(getYarnBerryVersion('/repo')).toBe('4.1.0-rc.1');
+    });
+
+    it('returns undefined when .yarn/releases is missing', () => {
+      mockReaddirSync.mockImplementation(() => {
+        throw new Error('ENOENT');
+      });
+
+      expect(getYarnBerryVersion('/repo')).toBeUndefined();
+    });
+
+    it('returns undefined when no entry matches yarn-<semver>.cjs', () => {
+      mockReaddirSync.mockReturnValue(['plugin-foo.cjs', 'README.md'] as unknown as ReturnType<typeof readdirSync>);
+
+      expect(getYarnBerryVersion('/repo')).toBeUndefined();
+    });
+
+    it('returns the first matching release when multiple exist', () => {
+      mockReaddirSync.mockReturnValue([
+        'yarn-3.6.4.cjs',
+        'yarn-4.0.2.cjs',
+      ] as unknown as ReturnType<typeof readdirSync>);
+
+      expect(getYarnBerryVersion('/repo')).toBe('3.6.4');
     });
   });
 });

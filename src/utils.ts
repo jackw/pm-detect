@@ -1,5 +1,5 @@
 import path from 'path';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, readdirSync } from 'fs';
 import { PackageManager } from './types';
 import { LOCK_FILE_NAMES } from './constants';
 
@@ -60,6 +60,23 @@ export function parsePnpmVersionFromModulesYaml(contents: string): string | unde
     return undefined;
   }
   return match[1];
+}
+
+export function getYarnBerryVersion(directory: string): string | undefined {
+  let entries: string[];
+  try {
+    entries = readdirSync(path.join(directory, '.yarn', 'releases'));
+  } catch {
+    return undefined;
+  }
+
+  for (const entry of entries) {
+    const match = /^yarn-(\d+\.\d+\.\d+.*)\.cjs$/.exec(entry);
+    if (match) {
+      return match[1];
+    }
+  }
+  return undefined;
 }
 
 export function getLockFilePath(directory: string) {
