@@ -140,3 +140,10 @@ vite.config.ts.timestamp-*
 
 # Claude Code local session artifacts
 .claude/
+
+# Allow install-state marker files under test fixtures
+!test/fixtures/**/node_modules
+!test/fixtures/**/node_modules/**
+!test/fixtures/**/.pnp.*
+!test/fixtures/**/.yarn
+!test/fixtures/**/.yarn/**
