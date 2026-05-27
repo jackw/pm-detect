@@ -293,12 +293,28 @@ describe('utils', () => {
       expect(getYarnBerryVersion('/repo')).toBeUndefined();
     });
 
-    it('returns the first matching release when multiple exist', () => {
+    it('returns the highest semver when multiple releases exist', () => {
       mockReaddirSync.mockReturnValue(['yarn-3.6.4.cjs', 'yarn-4.0.2.cjs'] as unknown as ReturnType<
         typeof readdirSync
       >);
 
-      expect(getYarnBerryVersion('/repo')).toBe('3.6.4');
+      expect(getYarnBerryVersion('/repo')).toBe('4.0.2');
+    });
+
+    it('does not depend on readdirSync ordering', () => {
+      mockReaddirSync.mockReturnValue(['yarn-4.0.2.cjs', 'yarn-3.6.4.cjs'] as unknown as ReturnType<
+        typeof readdirSync
+      >);
+
+      expect(getYarnBerryVersion('/repo')).toBe('4.0.2');
+    });
+
+    it('prefers a stable release over a prerelease of the same version', () => {
+      mockReaddirSync.mockReturnValue(['yarn-4.1.0-rc.1.cjs', 'yarn-4.1.0.cjs'] as unknown as ReturnType<
+        typeof readdirSync
+      >);
+
+      expect(getYarnBerryVersion('/repo')).toBe('4.1.0');
     });
   });
 

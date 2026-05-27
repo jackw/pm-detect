@@ -104,13 +104,53 @@ export function getYarnBerryVersion(directory: string): string | undefined {
     return undefined;
   }
 
+  const versions: string[] = [];
   for (const entry of entries) {
     const match = /^yarn-(\d+\.\d+\.\d+.*)\.cjs$/.exec(entry);
     if (match) {
-      return match[1];
+      versions.push(match[1]);
     }
   }
-  return undefined;
+
+  if (versions.length === 0) {
+    return undefined;
+  }
+
+  versions.sort(compareSemverDesc);
+  return versions[0];
+}
+
+function compareSemverDesc(a: string, b: string): number {
+  const av = parseSemver(a);
+  const bv = parseSemver(b);
+
+  if (av.major !== bv.major) {
+    return bv.major - av.major;
+  }
+  if (av.minor !== bv.minor) {
+    return bv.minor - av.minor;
+  }
+  if (av.patch !== bv.patch) {
+    return bv.patch - av.patch;
+  }
+
+  // Stable releases rank higher than any prerelease of the same X.Y.Z.
+  if (!av.prerelease && bv.prerelease) {
+    return -1;
+  }
+  if (av.prerelease && !bv.prerelease) {
+    return 1;
+  }
+  if (av.prerelease && bv.prerelease) {
+    return bv.prerelease.localeCompare(av.prerelease);
+  }
+  return 0;
+}
+
+function parseSemver(version: string): { major: number; minor: number; patch: number; prerelease: string | undefined } {
+  const [core, prerelease] = version.split('-', 2);
+  const [major, minor, patch] = core.split('.').map(Number);
+  return { major: major ?? 0, minor: minor ?? 0, patch: patch ?? 0, prerelease };
 }
 
 export function getLockFilePath(directory: string) {
