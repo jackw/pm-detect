@@ -142,9 +142,40 @@ function compareSemverDesc(a: string, b: string): number {
     return 1;
   }
   if (av.prerelease && bv.prerelease) {
-    return bv.prerelease.localeCompare(av.prerelease);
+    return -comparePrereleaseAsc(av.prerelease, bv.prerelease);
   }
   return 0;
+}
+
+// Compare prerelease identifiers per semver §11: split on '.', compare
+// all-numeric identifiers numerically, numeric < alphanumeric, more
+// identifiers > fewer when preceding identifiers are equal.
+function comparePrereleaseAsc(a: string, b: string): number {
+  const aParts = a.split('.');
+  const bParts = b.split('.');
+  const len = Math.min(aParts.length, bParts.length);
+
+  for (let i = 0; i < len; i++) {
+    const ap = aParts[i];
+    const bp = bParts[i];
+    const aIsNum = /^\d+$/.test(ap);
+    const bIsNum = /^\d+$/.test(bp);
+
+    if (aIsNum && bIsNum) {
+      const diff = Number(ap) - Number(bp);
+      if (diff !== 0) {
+        return diff;
+      }
+    } else if (aIsNum !== bIsNum) {
+      return aIsNum ? -1 : 1;
+    } else {
+      const cmp = ap.localeCompare(bp);
+      if (cmp !== 0) {
+        return cmp;
+      }
+    }
+  }
+  return aParts.length - bParts.length;
 }
 
 function parseSemver(version: string): { major: number; minor: number; patch: number; prerelease: string | undefined } {

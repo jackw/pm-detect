@@ -316,6 +316,14 @@ describe('utils', () => {
 
       expect(getYarnBerryVersion('/repo')).toBe('4.1.0');
     });
+
+    it('compares numeric prerelease identifiers numerically (rc.10 > rc.2)', () => {
+      mockReaddirSync.mockReturnValue(['yarn-4.1.0-rc.2.cjs', 'yarn-4.1.0-rc.10.cjs'] as unknown as ReturnType<
+        typeof readdirSync
+      >);
+
+      expect(getYarnBerryVersion('/repo')).toBe('4.1.0-rc.10');
+    });
   });
 
   describe('getPackageManagerFromInstallState', () => {
