@@ -7,5 +7,5 @@ export type PackageManager = {
 
 export type DetectOptions = {
   cwd?: string;
-  strategies?: ('packageJson' | 'lockFile' | 'userAgent')[];
+  strategies?: ('packageJson' | 'installState' | 'lockFile' | 'userAgent')[];
 };

@@ -1,7 +1,9 @@
 # Package Manager Detect
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This package includes a bin which can be used to detect the current node package manager a node project uses and it's associated commands.
@@ -46,18 +48,21 @@ npx pm-detect --working-dir /path/to/project
 
 ### `--strategies <strategies>`
 
-Specifies a comma-separated list of detection strategies to use. Available strategies are:
+Specifies a comma-separated list of detection strategies to use. The default order is `packageJson,installState,lockFile,userAgent` — the file-based strategies (`packageJson`, `installState`, `lockFile`) run in the order given against each directory while walking up from the working directory, and the first match wins. `userAgent` is a post-walk fallback: it only runs if no file-based strategy matched in any directory, regardless of where it appears in the list. Available strategies:
 
-- `packageJson` - Detect from package.json's packageManager field (recommended)
-- `lockFile` - Detect from lock file presence (bun.lock, bun.lockb, package-lock.json, yarn.lock, pnpm-lock.yaml)
-- `userAgent` - Detect from npm_config_user_agent environment variable
+- `packageJson` - Detect from `package.json`'s `packageManager` field (most authoritative; recommended)
+- `installState` - Detect from metadata each manager writes during install: `node_modules/.modules.yaml` (pnpm, with version), `node_modules/.yarn-state.yml` or `.pnp.cjs` (yarn berry; version recovered from `.yarn/releases/yarn-*.cjs`), `node_modules/.yarn-integrity` (yarn classic), `node_modules/.package-lock.json` (npm)
+- `lockFile` - Detect from lock file presence (`bun.lock`, `bun.lockb`, `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`)
+- `userAgent` - Detect from the `npm_config_user_agent` environment variable (post-walk fallback only)
+
+`installState` is preferred over `lockFile` by default because it reflects what is actually installed, which is more authoritative than a lockfile that may lag behind a manager switch.
 
 ```bash
 # Use only package.json detection
 npx pm-detect --strategies packageJson
 
 # Use multiple strategies in a specific order
-npx pm-detect --strategies packageJson,lockFile,userAgent
+npx pm-detect --strategies packageJson,installState,lockFile,userAgent
 ```
 
 ### `--help`

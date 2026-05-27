@@ -1,12 +1,17 @@
 import { PACKAGE_MANAGER_COMMANDS } from './constants';
-import { getPackageManagerFromPackageJson, getPackageManagerFromUserAgent, lookUp } from './utils';
+import {
+  getPackageManagerFromInstallState,
+  getPackageManagerFromPackageJson,
+  getPackageManagerFromUserAgent,
+  lookUp,
+} from './utils';
 import { LOCK_FILE_NAMES } from './constants';
 import { existsSync } from 'fs';
 import path from 'path';
 import { PackageManager, DetectOptions } from './types';
 
 export function detect(options: DetectOptions = {}): PackageManager | undefined {
-  const strategies = options.strategies ?? ['packageJson', 'lockFile', 'userAgent'];
+  const strategies = options.strategies ?? ['packageJson', 'installState', 'lockFile', 'userAgent'];
   for (const directory of lookUp(options.cwd)) {
     for (const strategy of strategies) {
       switch (strategy) {
@@ -31,6 +36,14 @@ export function detect(options: DetectOptions = {}): PackageManager | undefined 
                 name,
               };
             }
+          }
+          break;
+        }
+
+        case 'installState': {
+          const result = getPackageManagerFromInstallState(directory);
+          if (result) {
+            return result;
           }
           break;
         }
