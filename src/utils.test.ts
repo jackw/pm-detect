@@ -332,7 +332,11 @@ describe('utils', () => {
     const mockReaddirSync = vi.mocked(readdirSync);
 
     function markersExist(...suffixes: string[]) {
-      return (p: unknown) => suffixes.some((s) => String(p).endsWith(s));
+      const normalize = (s: string) => s.replace(/\\/g, '/');
+      return (p: unknown) => {
+        const normalized = normalize(String(p));
+        return suffixes.some((s) => normalized.endsWith(normalize(s)));
+      };
     }
 
     beforeEach(() => {
