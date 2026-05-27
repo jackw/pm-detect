@@ -73,7 +73,7 @@ The two-workflow split keeps `setup-node` out of the same workflow as `release-p
 
 The stage + approve gate is the supply-chain analogue of the release-please PR gate: CI cannot put a tarball on the public registry without a human present with 2FA, so a compromised CI runner cannot ship a malicious version unilaterally.
 
-A `GH_TOKEN` PAT secret is required so that the Release PR opened by release-please triggers `ci.yml` and `zizmor.yml` (default `GITHUB_TOKEN` does not). `NPM_TOKEN` is the staging credential, paired with OIDC provenance.
+A `GH_TOKEN` PAT secret is required so that the Release PR opened by release-please triggers `ci.yml` and `zizmor.yml` (default `GITHUB_TOKEN` does not). Authentication to npm is via [trusted publishing](https://docs.npmjs.com/trusted-publishers) — no long-lived `NPM_TOKEN` secret; the OIDC token (`id-token: write` + `environment: npm-publish`) is exchanged for a short-lived registry credential by the npm CLI, and the same OIDC token signs the provenance attestation.
 
 ### Workflow-hardening pre-flight
 
