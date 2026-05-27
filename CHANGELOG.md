@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/jackw/pm-detect/compare/v0.5.1...v0.6.0) (2026-05-27)
+
+
+### Features
+
+* add installState detection strategy ([#26](https://github.com/jackw/pm-detect/issues/26)) ([7331afc](https://github.com/jackw/pm-detect/commit/7331afcefe594f64c7f1217137c47884e8ac1bdd))
+
 ## [0.5.1](https://github.com/jackw/pm-detect/compare/v0.5.0...v0.5.1) (2026-05-26)
 
 
