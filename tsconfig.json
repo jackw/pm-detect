@@ -10,7 +10,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "removeComments": true,
-    "types": ["vitest/globals"],
+    "types": ["node", "vitest/globals"],
     "outDir": "${configDir}/dist",
     "rootDir": "./src"
   },
